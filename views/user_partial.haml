@@ -1,0 +1,17 @@
+- if account_details
+  %p
+    %span{:title=>"Home Page", :style=>"margin-right: 1em;"}
+      %a{:href=>account['home_page']}<
+        = account['home_page']
+    %span{:title=>"Location"}
+      = account['location']
+%hr
+- if tag_stats.count > 0
+  %table
+    - tag_stats.each do |row|
+      %tr
+        %td
+          = row['name']
+        %td
+          %span.number
+            = row['count']

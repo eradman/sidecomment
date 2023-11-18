@@ -1,0 +1,119 @@
+!!!
+%html{:lang=>"en"}
+  %head
+    %title sidecomment : Install
+    %link{:href => "/fonts.css", :rel => "stylesheet"}
+    %link{:href => "/main.css", :rel => "stylesheet"}
+    %meta{:name=>"viewport", :content=>"initial-scale=1.0, width=device-width"}
+
+  %body
+    %nav
+      %ul.nav
+        %li
+          %a{:href=>"/comment"} Comment
+        %li.active
+          %a{:href=>"/install"} Install
+        - if decoded_token['email']
+          %li
+            %a{:href=>"/sitecodes"} Sitecodes
+        %li.right
+          %a{:href=>"/account"} Account
+        - if decoded_token['email']
+          %li.right
+            %a{:href=>"/support"} Support
+
+    %div#content
+      %h1 Registration
+
+      %p
+      - if defined? registration
+        %form{:method=>"post"}
+          %table
+            %tr
+              %td E-mail Address
+              %td
+                %input{:name=>"email", :type=>"text", :size=>"30",
+                       :required=>"true",
+                       :value=>registration['email']}
+            %tr
+              %td Domain Names
+              %td
+                %textarea{:name=>"domains", :required=>true, :cols=>"30", :rows=>"5"}
+                  = PG::TextDecoder::Array.new.decode(registration['domains']).join("\n")
+            %tr
+              %td
+              %td
+                %input{:type=>"submit", :value=>"Update"}
+        - if message.length > 0
+          %p#status
+            &#10004;
+            = message
+      - else
+        %form{:method=>"post"}
+          %table
+            %tr
+              %td E-mail Address
+              %td
+                %input{:name=>"email", :type=>"text", :size=>"30",
+                       :value=>params[:email]||decoded_token['email'],
+                       :class=>('disabled' if !decoded_token['email'].nil?)}
+            %tr
+              %td Domain Names
+              %td
+                %textarea{:name=>"domains", :cols=>"30", :rows=>"5"}
+                  = params[:domains]
+            %tr
+              %td
+              %td
+                %input{:type=>"submit", :value=>"Submit"}
+        - if message.length > 0
+          %p#status
+            - if message.include? 'ERROR'
+              %span.error
+                = message
+            - else
+              %style
+                input { pointer-events: none; color: #666; }
+              &#10004;
+              = message
+
+      %h1 Installation
+      %p
+        Add the following script to the end of the bottom of each page
+      %pre.code
+        :escaped
+          <script>
+          var sidecomment_sitecode = "#{sitecode_id}";
+          </script>
+          <script src="//cdn.sidecomment.io/sidecomment.js"></script>
+      %p
+        Features:
+      %ul
+        %li Low overhead (10.5KB script)
+        %li No external resources (images, fonts, ...)
+        %li Does not set cookies or use local storage
+
+      %h2 Options
+
+      %p
+        You may specify the list of tags that displays a message indicating that
+        sidecomment is enabled:
+
+      %pre.code
+        :escaped
+          var sidecomment_hint_tags = ["p", "pre", "blockquote", "ol", "li"];
+          var sidecomment_hint_text = `
+            Contributions are welcome!
+            <br />
+            Select text to comment &#10564;
+          `;
+
+
+    %footer
+      © 2023&nbsp;
+      %a{:href=>"http://raticalsoftware.com"} Ratical Software
+
+    %script
+      var sidecomment_io_service = "";
+      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+    %script{:src => "/sidecomment.js"}

@@ -1,0 +1,23 @@
+%table.wide
+  %tr
+    %th Comment Code
+    %th Created
+    %th Author
+    %th Selection URL
+    %th Replies
+    %th Status
+  - tickets.each do |ticket|
+    %tr{:class=>('fadehighlight' if ticket['new'] == 't')}
+      %td
+        %a.fixed{:href=>"/tickets/#{ticket['usercode_id']}"}
+          = ticket['usercode_id']
+      %td
+        = ticket['created']
+      %td
+        = ticket['author']
+      %td
+        = ticket['url']
+      %td
+        = ticket['replies'] if ticket['replies'].to_i > 0
+      %td
+        = ticket['status']

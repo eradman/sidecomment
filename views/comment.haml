@@ -1,0 +1,92 @@
+!!!
+%html{:lang=>"en"}
+  %head
+    %title sidecomment : Comment
+    %link{:href => "/fonts.css", :rel => "stylesheet"}
+    %link{:href => "/main.css", :rel => "stylesheet"}
+    %meta{:name=>"viewport", :content=>"initial-scale=1.0, width=device-width"}
+
+    :javascript
+      function copyText(element) {
+        element.select();
+
+       var successful = document.execCommand('copy');
+        if (!successful)
+          console.log('Copy text failed')
+        window.getSelection().removeAllRanges();
+      }
+
+  %body
+    %nav
+      %ul.nav
+        %li.active
+          %a{:href=>"/comment"} Comment
+        %li
+          %a{:href=>"/install"} Install
+        - if decoded_token['email']
+          %li
+            %a{:href=>"/sitecodes"} Sitecodes
+        %li.right
+          %a{:href=>"/account"} Account
+        - if decoded_token['email']
+          %li.right
+            %a{:href=>"/support"} Support
+
+    %div#content
+      %h1 Revise, Suggest, Refine
+      %h2
+        Select Text, Submit Comments
+      %p
+        A comment code is used to submit a ticket on web sites using
+        sidecomment.io.
+      %ul
+        %li A valid e-mail address is required, but personal information is not
+        %li Comments are only sent to the site author, but you may share the link
+
+      %h2 Generate Usercode
+      %div.ticket
+        %form{:method=>"post"}
+          %table
+            %tr
+              %td E-mail Address
+              %td
+                %input{:name=>"email", :type=>"email", :required=>true,
+                       :value=>params[:email]||decoded_token['email'],
+                       :class=>('disabled' if !decoded_token['email'].nil?)}
+
+            %tr
+              %td Domain Name
+              %td
+                %input{:name=>"hostname", :type=>"text", :size=>"20", :required=>true, :value=>params[:hostname]}
+            %tr
+              %td
+              %td
+                %input{:type=>"submit", :value=>"Submit"}
+            %tr
+              %td{:colspan=>"2"}
+                %input{:readonly=>"", :id=>"commentcode", :value=>usercode}
+            %tr
+              %td{:colspan=>"2", :style=>"text-align: right"}
+                - if usercode && usercode.length > 0
+                  %a#copy{:onclick=>"copyText(document.getElementById('commentcode'))"}
+                    copy
+
+      - if message.length > 0
+        %p#status
+          - if message.include? 'ERROR'
+            %span.error
+              = message
+          - else
+            %style
+              input { pointer-events: none; color: #666; }
+            &#10004;
+            = message
+
+    %footer
+      © 2023&nbsp;
+      %a{:href=>"http://raticalsoftware.com"} Ratical Software
+
+    %script
+      var sidecomment_io_service = "";
+      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+    %script{:src => "/sidecomment.js"}

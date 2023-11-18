@@ -1,0 +1,9 @@
+.hmac_secret
+cdn/
+log/
+node_modules/
+package-lock.json
+passed
+public/sidecomment.js
+run/
+*.woff2

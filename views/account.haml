@@ -1,0 +1,132 @@
+!!!
+%html{:lang=>"en"}
+  %head
+    %title sidecomment : Account
+    %link{:href => "/fonts.css", :rel => "stylesheet"}
+    %link{:href => "/main.css", :rel => "stylesheet"}
+    %meta{:name=>"viewport", :content=>"initial-scale=1.0, width=device-width"}
+    %script{:src => "/ui.js"}
+
+    :javascript
+      function fetchUser(username) {
+        var notecard_div = document.getElementById("notecard");
+
+        getData('/user/'+username)
+        .then(data => {
+          if (notecard_div) notecard_div.innerHTML = data;
+        });
+      }
+
+      function updateAccount() {
+        var username = document.getElementById('username');
+        var location = document.getElementById('location');
+        var home_page = document.getElementById('home_page');
+
+        patchData('/account',
+                {'username': username.value,
+                 'location': location.value,
+                 'home_page': home_page.value})
+        .then(data => {
+          var status_span = document.getElementById('patch_account_status');
+          if ('error' in data) {
+            status_span.innerHTML = data['error'];
+          }
+          else {
+            status_span.innerHTML = "&#10004; saved";
+            setTimeout(() => status_span.innerHTML = "", 3000);
+          }
+        });
+        return false;  /* don't reload page */
+      }
+
+  %body
+    %nav
+      %ul.nav
+        %li
+          %a{:href=>"/comment"} Comment
+        %li
+          %a{:href=>"/install"} Install
+        - if decoded_token['email']
+          %li
+            %a{:href=>"/sitecodes"} Sitecodes
+        %li.active.right
+          %a{:href=>"/account"} Account
+        - if decoded_token['email']
+          %li.right
+            %a{:href=>"/support"} Support
+
+    %div#content
+      %h1 Account Details
+
+      %p
+        %span.error
+          = decoded_token['error']
+      - if decoded_token['email']
+        %div.ticket
+          %a{:style=>"float: right;", :href=>"/logout"} Log out
+          = account['email']
+          %hr
+          %form
+            %table
+              %tr
+                %td
+                  Username
+                %td
+                  %input{:type=>"text", :name=>"username", :id=>"username",
+                         :size=>"32", :maxlength=>"128", :required=>true,
+                         :pattern=>"[a-z]{3,32}",
+                         :title=>"chars: 'a-z', size: 3-32",
+                         :value=>account['username']}
+              %tr
+                %td
+                  Location
+                %td
+                  %input{:type=>"text", :name=>"location", :id=>"location",
+                         :title=>"State, Country",
+                         :size=>"32", :maxlength=>"128", :value=>account['location']}
+              %tr
+                %td
+                  Home Page
+                %td
+                  %input{:type=>"url", :name=>"home_page", :id=>"home_page",
+                         :title=>"http://",
+                         :size=>"32", :maxlength=>"128", :value=>account['home_page']}
+              %tr
+                %td
+                  %input{:type=>"submit", :value=>"Update",
+                    :onclick=>"return updateAccount()"}
+                %td
+                  %span.status#patch_account_status
+
+        %h2 User Stats
+        %div#notecard
+        :javascript
+          setTimeout(fetchUser("#{account['username']}"), 500);
+
+      - else
+        %h2 Sign In
+        %p
+          %form{:method=>"post"}
+            %table
+              %tr
+                %td E-mail Address
+                %td
+                  %input{:name=>"email", :type=>"text", :size=>"30", :value=>params[:email]}
+              %tr
+                %td
+                %td
+                  %input{:type=>"submit", :value=>"Submit"}
+        %p
+          - if params[:email]
+            %style
+              input { pointer-events: none; color: #666; }
+            &#10004; One-time link sent by e-mail.
+
+    %footer
+      © 2023&nbsp;
+      %a{:href=>"http://raticalsoftware.com"} Ratical Software
+
+    %script
+      var sidecomment_io_service = "";
+      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+    %script{:src => "/sidecomment.js"}

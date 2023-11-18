@@ -1,0 +1,187 @@
+- require 'cgi'
+- br_tag = "<br>\n"
+!!!
+%html{:lang=>"en"}
+  %head
+    %title sidecomment : Tickets
+    %link{:href => "/fonts.css", :rel => "stylesheet"}
+    %link{:href => "/main.css", :rel => "stylesheet"}
+    %meta{:name=>"viewport", :content=>"initial-scale=1.0, width=device-width"}
+    %script{:src => "/ui.js"}
+
+    :javascript
+      function fetchUser(username) {
+        var notecard_div = document.getElementById("notecard")
+
+        getData('/user/'+username+"?account_details=1")
+        .then(data => {
+          if (notecard_div) notecard_div.innerHTML = data;
+        });
+      }
+
+      function fetchReplies(ticket_id) {
+        var reply_div = document.getElementById("ticket_reply_div_"+ticket_id);
+
+        getData('/replies/'+ticket_id)
+        .then(data => {
+          if (reply_div) reply_div.innerHTML = data;
+        });
+      }
+
+      function submitReply(ticket_id) {
+        var reply_text = document.getElementById("reply_text_"+ticket_id);
+
+        postData('/reply',
+                {'ticket_id': ticket_id,
+                 'comment_area': reply_text.value})
+        .then(data => {
+            var status_span = document.getElementById("form_status_"+ticket_id);
+            if ('error' in data) {
+              status_span.innerHTML = data['error'];
+            }
+            else {
+              status_span.innerHTML = "";
+              fetchReplies(ticket_id);
+            }
+        });
+        reply_text.value = "";
+      }
+
+      function tagAndClose(ticket_id, reload) {
+        var tag_text = document.getElementById("tag_"+ticket_id);
+
+        putData('/tag',
+                {'ticket_id': ticket_id,
+                 'tag': tag_text.value})
+        .then(data => {
+            var status_span = document.getElementById("form_status_"+ticket_id);
+            if ('error' in data) {
+              status_span.innerHTML = data['error'];
+            }
+            else {
+              status_span.innerHTML = "&#10004; saved";
+              if (reload) {
+                window.scroll({top: 0});
+                location.reload();
+              }
+              else {
+                setTimeout(() => status_span.innerHTML = "", 3000);
+              }
+            }
+        });
+      }
+
+  %body
+    %nav
+      %ul.nav
+        %li
+          %a{:href=>"/comment"} Comment
+        %li
+          %a{:href=>"/install"} Install
+        - if decoded_token['email']
+          %li
+            %a{:href=>"/sitecodes"} Sitecodes
+        %li.right
+          %a{:href=>"/account"} Account
+        - if decoded_token['email']
+          %li.right
+            %a{:href=>"/support"} Support
+
+    %div#content
+      %h1 Tickets
+      %div#author
+        Author:
+        %a.showhide{:onclick=>"showHide('notecard')"}
+          = account['username']
+      %div#notecard{:style=>"display:none"}
+        :javascript
+          fetchUser('#{account['username']}')
+
+      %h2 Open
+      - tickets.select{|row| row['closed']==nil}.each do |row|
+        %div.ticket
+          %div
+          - if row['selection'].nil?
+            %span{:style=>"font-size: 1.2em"}
+              = row['topic']
+            %span.right
+              = row['created']
+          - else
+            %a{:href=>row['url'], :target=>"_new"}
+              = row['url']
+            %span.right
+              = row['created']
+            %p
+              Selection
+            %p.quote
+              = CGI::escapeHTML(row['base']).gsub("\n", br_tag)
+              %span.hilight<>
+                = CGI::escapeHTML(row['selection']).gsub("\n", br_tag)
+              = CGI::escapeHTML(row['extent']).gsub("\n", br_tag)
+            %p
+              Comments
+          %p.quote
+            = CGI::escapeHTML(row['comment_area']).gsub("\n", br_tag)
+
+        %div.ticket
+          %div{:id=>"ticket_reply_div_" + row['ticket_id']}
+            &#8226;&#8226;&#8226;
+
+          %form{:method=>"post"}
+            %textarea.wide{:id=>"reply_text_"+row['ticket_id'], :name=>"reply", :rows=>"5"}
+            %input{:type=>"button", :value=>"Comment",
+                   :onclick=>"return submitReply("+row['ticket_id']+")"}
+            %span.status{:id=>"form_status_" + row['ticket_id']}
+
+            - if authenticated_email == row['sitecode_email']
+              %span.right
+                %span.status
+                  tag-and-close
+                %input{:type=>"text", :size=>"20", :maxlength=>"20",
+                       :pattern=>"^[a-z]+(-[a-z]+)?(-[a-z]+)?",
+                       :title=>"chars: 'a-z', '-' size: 3-20",
+                       :id=>"tag_"+row['ticket_id']}
+                %input{:type=>"button", :value=>"Close",
+                       :onclick=>"return tagAndClose("+row['ticket_id']+", true)"}
+
+      %h2 Closed
+      - tickets.reject{|row| row['closed']==nil}.each do |row|
+        %div.ticket
+          %div
+            %a{:href=>row['url'], :target=>"_new"}
+              = row['url']
+            %span.right
+              = row['created']
+              %br
+              %span.status
+                closed
+                = row['closed']
+          %br
+          %form
+            Tag:
+            %input{:type=>"text", :size=>"20", :maxlength=>"20",
+                   :pattern=>"^[a-z]+(-[a-z]+)?(-[a-z]+)?",
+                   :title=>"chars: 'a-z', '-' size: 3-20",
+                   :id=>"tag_"+row['ticket_id'],
+                   :value=>row['tag_name']}
+            %input{:type=>"button", :value=>"Update",
+                   :onclick=>"return tagAndClose("+row['ticket_id']+", false)"}
+            %span.status{:id=>"form_status_" + row['ticket_id']}
+
+      %p
+        %em Tickets are archived after 30 days
+
+      :javascript
+        const tickets = [#{tickets.map { |row| row['ticket_id'] }.join(',')}];
+        tickets.forEach(id => {
+          fetchReplies(id);
+        });
+
+    %footer
+      © 2023&nbsp;
+      %a{:href=>"http://raticalsoftware.com"} Ratical Software
+
+    %script
+      var sidecomment_io_service = "";
+      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+    %script{:src => "/sidecomment.js"}

@@ -1,0 +1,4 @@
+{
+  "esversion": 8,
+  "evil": true    /* allow document.write() */
+}

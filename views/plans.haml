@@ -1,0 +1,107 @@
+!!!
+%html{:lang=>"en"}
+  %head
+    %title sidecomment : Account
+    %link{:href => "/fonts.css", :rel => "stylesheet"}
+    %link{:href => "/main.css", :rel => "stylesheet"}
+    %meta{:name=>"viewport", :content=>"initial-scale=1.0, width=device-width"}
+    %script{:src => "/ui.js"}
+
+  %body
+    %nav
+      %ul.nav
+        %li
+          %a{:href=>"/comment"} Comment
+        %li
+          %a{:href=>"/install"} Install
+        - if decoded_token['email']
+          %li
+            %a{:href=>"/sitecodes"} Sitecodes
+        %li.right
+          %a{:href=>"/account"} Account
+        - if decoded_token['email']
+          %li.right
+            %a{:href=>"/support"} Support
+
+    :css
+      div.summary {
+        display: flex;
+        max-width: 10in;
+        margin: 1em;
+      }
+
+      div.summary-box {
+        flex: 1;
+        background-color: #fff;
+        border-radius: 6px;
+        padding: 1em;
+        box-shadow: 0px 0px 10px #ccc;
+        text-align: center;
+        margin-right: 1.5em;
+      }
+
+      div.summary div.price {
+        font-size: 1.8em;
+        color: #999;
+        margin-bottom: 0.2em;
+      }
+
+      div.summary div.interval {
+        font-size: 0.8em;
+        color: #999;
+        text-transform: uppercase;
+      }
+
+      div.summary ul {
+        list-style-position: outside;
+        margin-left: 0;
+        padding-left: 0;
+        line-height: 1.5em;
+      }
+
+      div.summary li::marker {
+        content: none;
+      }
+
+    %div#content
+      %h1 Plans
+
+      %div.summary
+        %div.summary-box
+          %h2 Community
+          %div.price
+            $0
+          %div.interval
+            monthly
+          %ul
+            %li Unlimited Sites
+            %li Unlimited Tickets
+
+        %div.summary-box
+          %h2 Business
+          %div.price
+            $30
+          %div.interval
+            monthly
+          %ul
+            %li Custom Domains
+            %li E-mail Support
+
+        %div.summary-box
+          %h2 Enterprise
+          %div.price
+            $90
+          %div.interval
+            monthly
+          %ul
+            %li Single Sign-on
+            %li Branded Notifications
+
+    %footer
+      © 2023&nbsp;
+      %a{:href=>"http://raticalsoftware.com"} Ratical Software
+
+    %script
+      var sidecomment_io_service = "";
+      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+    %script{:src => "/sidecomment.js"}

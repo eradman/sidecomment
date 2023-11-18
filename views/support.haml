@@ -1,0 +1,75 @@
+!!!
+%html{:lang=>"en"}
+  %head
+    %title sidecomment : Support
+    %link{:href => "/fonts.css", :rel => "stylesheet"}
+    %link{:href => "/main.css", :rel => "stylesheet"}
+    %meta{:name=>"viewport", :content=>"initial-scale=1.0, width=device-width"}
+    %script{:src => "/ui.js"}
+
+    :javascript
+      function fetchIssueSummary(sitecode_id) {
+        var reply_div = document.getElementById("ticket_summary_div_"+sitecode_id);
+
+        getData('/issue_summary/'+sitecode_id)
+        .then(data => {
+          reply_div.innerHTML = data;
+        });
+      }
+
+  %body
+    %nav
+      %ul.nav
+        %li
+          %a{:href=>"/comment"} Comment
+        %li
+          %a{:href=>"/install"} Install
+        - if decoded_token['email']
+          %li
+            %a{:href=>"/sitecodes"} Sitecodes
+        %li.right
+          %a{:href=>"/account"} Account
+        - if decoded_token['email']
+          %li.right.active
+            %a{:href=>"/support"} Support
+
+
+    %div#content
+      %h1 Current Issues
+
+      %h2 sidecomment.io
+      %p
+        %span.error
+          = decoded_token['error']
+      %div.ticket
+        %div{:id=>"ticket_summary_div_5c188e73-bbc8-4c1b-96c2-d4a195bd6cef"}
+      :javascript
+        fetchIssueSummary("5c188e73-bbc8-4c1b-96c2-d4a195bd6cef")
+
+      %h2 New Issue
+      %form{:method=>"post"}
+        %input{:type=>"hidden", :name=>"sitecode_id", :value=>"5c188e73-bbc8-4c1b-96c2-d4a195bd6cef"}
+        %table
+          %tr
+            %td
+              %label Topic
+            %td
+              %input{:size=>30, :maxlength=>30, :name=>"topic", :required=>true}
+          %tr
+            %td
+              %label Details
+            %td
+              %textarea{:rows=>4, :cols=>"60", :name=>"comment_area", :required=>true}
+          %tr
+            %td
+            %td
+              %input{:type=>"submit"}
+
+    %footer
+      © 2023&nbsp;
+      %a{:href=>"http://raticalsoftware.com"} Ratical Software
+
+    %script
+      var sidecomment_io_service = "";
+      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+    %script{:src => "/sidecomment.js"}

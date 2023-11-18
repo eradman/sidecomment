@@ -1,0 +1,26 @@
+Style/HashSyntax:
+  EnforcedStyle: no_mixed_keys
+
+Metrics/MethodLength:
+  Max: 32
+
+Style/GlobalVars:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Metrics/AbcSize:
+  Exclude:
+    - "server_tests/*"
+    - "client_tests/*"
+
+Metrics/ClassLength:
+  Exclude:
+    - "server_tests/*"
+    - "client_tests/*"
+
+Style/ClassVars:
+  Exclude:
+    - "server_tests/*"
+    - "client_tests/*"

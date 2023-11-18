@@ -1,0 +1,10 @@
+- require 'cgi'
+- br_tag = "<br>\n"
+- if not replies.nil?
+  - replies.reverse_each do |row|
+    %div.createdby
+      = row['username']
+      &ndash;
+      = row['created']
+    %p.quote{:class=>('fadehighlight' if row['new'] == 't')}
+      = CGI::escapeHTML(row['comment_area']).gsub("\n", br_tag)

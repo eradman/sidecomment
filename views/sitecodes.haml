@@ -1,0 +1,76 @@
+!!!
+%html{:lang=>"en"}
+  %head
+    %title sidecomment : Sitecodes
+    %link{:href => "/fonts.css", :rel => "stylesheet"}
+    %link{:href => "/main.css", :rel => "stylesheet"}
+    %meta{:name=>"viewport", :content=>"initial-scale=1.0, width=device-width"}
+    %script{:src => "/ui.js"}
+
+    :javascript
+      function fetchTicketSummary(sitecode_id) {
+        var reply_div = document.getElementById("ticket_summary_div_"+sitecode_id);
+
+        getData('/ticket_summary/'+sitecode_id)
+        .then(data => {
+          reply_div.innerHTML = data;
+        });
+      }
+
+  %body
+    %nav
+      %ul.nav
+        %li
+          %a{:href=>"/comment"} Comment
+        %li
+          %a{:href=>"/install"} Install
+        - if decoded_token['email']
+          %li.active
+            %a{:href=>"/sitecodes"} Sitecodes
+        %li.right
+          %a{:href=>"/account"} Account
+        - if decoded_token['email']
+          %li.right
+            %a{:href=>"/support"} Support
+
+    %div#content
+      %h1 Your Sitecodes
+
+      %p
+        %span.error
+          = decoded_token['error']
+
+      - if decoded_token['email']
+        - if sitecodes.count == 0
+          %em No web sites registered
+        - else
+          - sitecodes.each do |row|
+            %h2
+              = row['sitecode_id']
+            %div{:id=>"domain_list_div_" + row['sitecode_id']}
+              %pre
+                = PG::TextDecoder::Array.new.decode(row['domains']).join("\n")
+              %p
+                %a{:href=>"/install/" + row['sitecode_id']} Edit
+
+            %div.ticket
+              %div{:id=>"ticket_summary_div_" + row['sitecode_id']}
+
+          :javascript
+            const sitecodes = ['#{sitecodes.map { |row| row['sitecode_id'] }.join("','")}'];
+            sitecodes.forEach(id => {
+              fetchTicketSummary(id);
+            });
+      - else
+        %p
+          %a{:href=>"/account"} Log in
+          to view this page
+
+    %footer
+      © 2023&nbsp;
+      %a{:href=>"http://raticalsoftware.com"} Ratical Software
+
+    %script
+      var sidecomment_io_service = "";
+      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+    %script{:src => "/sidecomment.js"}
