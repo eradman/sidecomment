@@ -22,37 +22,35 @@ Authorization
 Requirements
 ------------
 
-Runtime
+Runtime: ruby postgresql-server
+Test: ephemeralpg chromium node
 
-* Packages: ruby postgresql-server
-* Gems: sinatra sinatra-contrib haml pg puma jwt net-smtp
+Installation
+------------
 
-Test
-
-* Packages: ephemeralpg chromium node
-* Gems: minitest minitest-utils rack-test ferrum rubocop puma nokogiri
-* Node: jshint
+    bundle install
+    npm install
 
 Database Initialization
 -----------------------
 
 Reset everything
 
-    dropdb -U postgres sidecomment
+    dropdb sidecomment
 
 Initialize database
 
-    psql -U postgres -f schema/roles.sql
-    psql -U postgres -c 'CREATE DATABASE sidecomment OWNER sidecomment;'
-    psql -U postgres -c 'ALTER USER sidecomment SUPERUSER;'
+    psql -f schema/roles.sql
+    psql -c 'CREATE DATABASE sidecomment OWNER sidecomment;'
+    psql -c 'ALTER USER sidecomment SUPERUSER;'
     for f in schema/??-*.sql; do
-        psql -q -U sidecomment < $f
+        psql -q -U sidecomment -f $f
     done
-    psql -U postgres -c 'ALTER USER sidecomment NOSUPERUSER;'
+    psql -c 'ALTER USER sidecomment NOSUPERUSER;'
 
 Optionally load test data
 
-    psql -U sidecomment < server_tests/data.sql
+    psql -U sidecomment -f server_tests/data.sql
 
 History
 -------

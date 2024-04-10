@@ -3,6 +3,7 @@ cdn/
 log/
 node_modules/
 package-lock.json
+Gemfile.lock
 passed
 public/sidecomment.js
 run/

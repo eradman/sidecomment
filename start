@@ -19,7 +19,7 @@ case $n in
         ;;
     1)
         tmux new-window -t $window -n "server"
-        tmux send-keys -t $window "ls *.rb schema/* server_tests/* | entr -r puma32 -t 1:1 -e development" C-m
+        tmux send-keys -t $window "ls *.rb schema/* server_tests/* | entr -r puma33 -t 1:1 -e development" C-m
         ;;
     2)
         tmux new-window -t $window -n "database"
