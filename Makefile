@@ -1,6 +1,10 @@
 date != date "+%y-%m"
 
-all: server_tests/passed client_tests/passed
+all: lint server_tests/passed client_tests/passed
+
+lint:
+	rubocop33
+	node_modules/.bin/jshint
 
 client_tests/passed: client/* client_tests/*.rb client_tests/*.html
 	cat client/common.js client/rest.js client/select.js client/comment.js > cdn/sidecomment.js
@@ -16,4 +20,4 @@ clean:
 	rm -f server_tests/passed client_tests/passed
 	rm -f run/* log/*
 
-.PHONY: all clean
+.PHONY: all clean lint

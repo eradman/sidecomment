@@ -1,5 +1,9 @@
+AllCops:
+  SuggestExtensions: false
+
 Style/HashSyntax:
   EnforcedStyle: no_mixed_keys
+  EnforcedShorthandSyntax: never
 
 Metrics/MethodLength:
   Max: 32
