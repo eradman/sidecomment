@@ -1,5 +1,6 @@
 AllCops:
   SuggestExtensions: false
+  NewCops: enable
 
 Style/HashSyntax:
   EnforcedStyle: no_mixed_keys

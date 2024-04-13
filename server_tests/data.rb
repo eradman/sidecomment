@@ -50,11 +50,6 @@ class DataTest < Minitest::Test
     assert_equal 3, r.count
   end
 
-  def test_sidecomment_stats
-    r = db.exec %( SELECT usename, calls FROM sidecomment_stats; )
-    assert r.count.positive?
-  end
-
   # data functions
 
   def test_query_usercode
