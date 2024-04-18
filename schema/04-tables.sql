@@ -1,5 +1,5 @@
 CREATE TABLE account (
-  account_id serial PRIMARY KEY,
+  account_id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   created timestamp with time zone NOT NULL DEFAULT now(),
   email varchar(128) NOT NULL UNIQUE,
   username varchar(32) NOT NULL UNIQUE,
@@ -26,7 +26,7 @@ CREATE TABLE usercode (
 );
 
 CREATE TABLE tag (
-  tag_id serial PRIMARY KEY,
+  tag_id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name varchar(20) NOT NULL UNIQUE,
   created timestamp with time zone NOT NULL DEFAULT now(),
   modified timestamp with time zone NOT NULL DEFAULT now()
@@ -35,7 +35,7 @@ CREATE TABLE tag (
 SELECT setval('tag_tag_id_seq', 1000);
 
 CREATE TABLE ticket (
-  ticket_id serial PRIMARY KEY,
+  ticket_id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   created timestamp with time zone NOT NULL DEFAULT now(),
   usercode_id shortkey REFERENCES usercode (usercode_id) NOT NULL,
   sitecode_id uuid REFERENCES sitecode (sitecode_id) NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE ticket (
 );
 
 CREATE TABLE reply (
-  reply_id serial PRIMARY KEY,
+  reply_id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   account_id integer REFERENCES account (account_id) NOT NULL,
   created timestamp with time zone NOT NULL DEFAULT now(),
   ticket_id integer REFERENCES ticket (ticket_id) NOT NULL,
@@ -97,14 +97,14 @@ CREATE TABLE archive.usercode (
 );
 
 CREATE TABLE archive.tag (
-  tag_id serial PRIMARY KEY,
+  tag_id bigint PRIMARY KEY,
   name varchar(20) NOT NULL UNIQUE,
   created timestamp with time zone NOT NULL,
   modified timestamp with time zone NOT NULL
 );
 
 CREATE TABLE archive.ticket (
-  ticket_id serial PRIMARY KEY,
+  ticket_id bigint PRIMARY KEY,
   created timestamp with time zone NOT NULL,
   usercode_id shortkey REFERENCES archive.usercode (usercode_id) NOT NULL,
   sitecode_id uuid NOT NULL,

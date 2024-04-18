@@ -46,3 +46,5 @@ GRANT SELECT,INSERT ON archive.operation_log TO system;
 GRANT SELECT,INSERT ON archive.tag TO system;
 GRANT SELECT,INSERT ON archive.ticket TO system;
 GRANT SELECT,INSERT ON archive.usercode TO system;
+
+ALTER MATERIALIZED VIEW archive_tag_summary OWNER TO system;
