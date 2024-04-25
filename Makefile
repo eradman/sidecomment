@@ -17,6 +17,7 @@ server_tests/passed: *.rb schema/* server_tests/*.rb server_tests/*.sql views/*
 
 clean:
 	rm -f .hmac_secret server_tests/.hmac_secret
+	rm -f .local_sitecode server_tests/.local_sitecode
 	rm -f server_tests/passed client_tests/passed
 	rm -f run/* log/*
 

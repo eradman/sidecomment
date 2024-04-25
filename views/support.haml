@@ -8,10 +8,10 @@
     %script{:src => "/ui.js"}
 
     :javascript
-      function fetchIssueSummary(sitecode_id) {
-        var reply_div = document.getElementById("ticket_summary_div_"+sitecode_id);
+      function fetchIssueSummary(local_sitecode) {
+        var reply_div = document.getElementById("ticket_summary_div_"+local_sitecode);
 
-        getData('/issue_summary/'+sitecode_id)
+        getData('/issue_summary/'+local_sitecode)
         .then(data => {
           reply_div.innerHTML = data;
         });
@@ -42,13 +42,13 @@
         %span.error
           = decoded_token['error']
       %div.ticket
-        %div{:id=>"ticket_summary_div_5c188e73-bbc8-4c1b-96c2-d4a195bd6cef"}
+        %div{:id=>"ticket_summary_div_"+local_sitecode}
       :javascript
-        fetchIssueSummary("5c188e73-bbc8-4c1b-96c2-d4a195bd6cef")
+        fetchIssueSummary("#{local_sitecode}")
 
       %h2 New Issue
       %form{:method=>"post"}
-        %input{:type=>"hidden", :name=>"sitecode_id", :value=>"5c188e73-bbc8-4c1b-96c2-d4a195bd6cef"}
+        %input{:type=>"hidden", :name=>"sitecode_id", :value=>local_sitecode}
         %table
           %tr
             %td
@@ -71,5 +71,5 @@
 
     %script
       var sidecomment_io_service = "";
-      var sidecomment_sitecode = "5c188e73-bbc8-4c1b-96c2-d4a195bd6cef";
+      var sidecomment_sitecode = "#{local_sitecode}";
     %script{:src => "/sidecomment.js"}

@@ -36,6 +36,12 @@ rescue JWT::DecodeError => e
   { 'error' => e.message }
 end
 
+# site configuration
+
+def local_sitecode
+  @local_sitecode ||= File.read('.local_sitecode').strip
+end
+
 # error handling
 
 not_found do
@@ -54,14 +60,16 @@ end
 
 get '/plans' do
   decoded_token = read_access_token(cookies[:access_token])
-  haml :plans, locals: { usercode: '',
+  haml :plans, locals: { local_sitecode: local_sitecode,
+                         usercode: '',
                          message: '',
                          decoded_token: decoded_token }
 end
 
 get '/comment' do
   decoded_token = read_access_token(cookies[:access_token])
-  haml :comment, locals: { usercode: '',
+  haml :comment, locals: { local_sitecode: local_sitecode,
+                           usercode: '',
                            message: '',
                            decoded_token: decoded_token }
 end
@@ -85,7 +93,8 @@ post '/comment' do
     message = e.to_s
     message = "ERROR: #{message}" unless message.include? 'ERROR'
   end
-  haml :comment, locals: { usercode: usercode,
+  haml :comment, locals: { local_sitecode: local_sitecode,
+                           usercode: usercode,
                            params: params,
                            message: message,
                            decoded_token: decoded_token }
@@ -95,7 +104,8 @@ end
 
 get '/install' do
   decoded_token = read_access_token(cookies[:access_token])
-  haml :install, locals: { sitecode_id: '',
+  haml :install, locals: { local_sitecode: local_sitecode,
+                           sitecode_id: '',
                            params: params,
                            message: '',
                            decoded_token: decoded_token }
@@ -114,7 +124,8 @@ post '/install' do
     message = e.to_s
     message = "ERROR: #{message}" unless message.include? 'ERROR'
   end
-  haml :install, locals: { sitecode_id: sitecode,
+  haml :install, locals: { local_sitecode: local_sitecode,
+                           sitecode_id: sitecode,
                            params: params,
                            message: message,
                            decoded_token: decoded_token }
@@ -125,7 +136,8 @@ get '/install/:sitecode_id' do
   halt 401, decoded_token['error'] if decoded_token.key?('error')
 
   registration = fetch_registration(params['sitecode_id'])
-  haml :install, locals: { sitecode_id: params['sitecode_id'],
+  haml :install, locals: { local_sitecode: local_sitecode,
+                           sitecode_id: params['sitecode_id'],
                            registration: registration,
                            message: '',
                            decoded_token: decoded_token }
@@ -143,7 +155,8 @@ post '/install/:sitecode_id' do
     message = e.to_s
     message = "ERROR: #{message}" unless message.include? 'ERROR'
   end
-  haml :install, locals: { sitecode_id: params['sitecode_id'],
+  haml :install, locals: { local_sitecode: local_sitecode,
+                           sitecode_id: params['sitecode_id'],
                            registration: registration,
                            message: message,
                            decoded_token: decoded_token }
@@ -157,7 +170,8 @@ get '/tickets/:token' do
   halt 404, 'Usercode not found' if account.nil?
   tickets = fetch_tickets(params['token'])
   authenticated_email = decoded_token['email'] || nil
-  haml :tickets, locals: { authenticated_email: authenticated_email,
+  haml :tickets, locals: { local_sitecode: local_sitecode,
+                           authenticated_email: authenticated_email,
                            tickets: tickets,
                            account: account,
                            decoded_token: decoded_token }
@@ -194,14 +208,16 @@ get '/account', :otp => true do
 
   decoded_token = read_access_token(cookies[:access_token])
   account = fetch_account(decoded_token['email'], :email)
-  haml :account, locals: { account: account,
+  haml :account, locals: { local_sitecode: local_sitecode,
+                           account: account,
                            decoded_token: decoded_token }
 end
 
 get '/account' do
   decoded_token = read_access_token(cookies[:access_token])
   account = fetch_account(decoded_token['email'], :email)
-  haml :account, locals: { account: account,
+  haml :account, locals: { local_sitecode: local_sitecode,
+                           account: account,
                            decoded_token: decoded_token }
 end
 
@@ -209,7 +225,8 @@ post '/account' do
   decoded_token = read_access_token(cookies[:access_token])
   otp = reset_otp(params[:email])
   send_one_time_login(params[:email], otp)
-  haml :account, locals: { decoded_token: decoded_token }
+  haml :account, locals: { local_sitecode: local_sitecode,
+                           decoded_token: decoded_token }
 end
 
 # sitecodes route
@@ -217,7 +234,8 @@ end
 get '/sitecodes' do
   decoded_token = read_access_token(cookies[:access_token])
   sitecodes = fetch_sitecodes(decoded_token['email'])
-  haml :sitecodes, locals: { sitecodes: sitecodes,
+  haml :sitecodes, locals: { local_sitecode: local_sitecode,
+                             sitecodes: sitecodes,
                              decoded_token: decoded_token }
 end
 
@@ -225,7 +243,8 @@ get '/user/:username' do
   decoded_token = read_access_token(cookies[:access_token])
   account = fetch_account(params['username'], :username)
   tag_stats = fetch_tag_stats(account['email'])
-  haml :user_partial, locals: { account: account,
+  haml :user_partial, locals: { local_sitecode: local_sitecode,
+                                account: account,
                                 account_details: params['account_details'],
                                 tag_stats: tag_stats,
                                 decoded_token: decoded_token }
@@ -236,7 +255,8 @@ end
 get '/support' do
   decoded_token = read_access_token(cookies[:access_token])
   halt 401, decoded_token if decoded_token.key?('error')
-  haml :support, locals: { decoded_token: decoded_token }
+  haml :support, locals: { local_sitecode: local_sitecode,
+                           decoded_token: decoded_token }
 end
 
 post '/support' do
@@ -249,7 +269,8 @@ post '/support' do
              request.host # incorrect, for testing only
            end
   create_issue(decoded_token['email'], origin, params)
-  haml :support, locals: { decoded_token: decoded_token }
+  haml :support, locals: { local_sitecode: local_sitecode,
+                           decoded_token: decoded_token }
 end
 
 # logout route

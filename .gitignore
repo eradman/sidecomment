@@ -1,4 +1,5 @@
 .hmac_secret
+.local_sitecode
 cdn/
 log/
 node_modules/
