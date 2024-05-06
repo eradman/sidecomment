@@ -1,19 +1,21 @@
 date != date "+%y-%m"
 
-all: lint server_tests/passed client_tests/passed
+all: cdn/sidecomment.js server_tests/passed client_tests/passed
 
-lint:
-	rubocop33
-	node_modules/.bin/jshint
+cdn/sidecomment.js: sidecomment.js
+	cp sidecomment.js cdn/sidecomment.js
 
-client_tests/passed: client/* client_tests/*.rb client_tests/*.html
-	cat client/common.js client/rest.js client/select.js client/comment.js > cdn/sidecomment.js
+client_tests/passed: client_tests/*.rb client_tests/*.html
 	client_tests/run.sh
 	date > client_tests/passed
 
 server_tests/passed: *.rb schema/* server_tests/*.rb server_tests/*.sql views/*
 	server_tests/run.sh
 	date > server_tests/passed
+
+lint:
+	rubocop33
+	npx jshint public/ui.js
 
 clean:
 	rm -f .hmac_secret server_tests/.hmac_secret
