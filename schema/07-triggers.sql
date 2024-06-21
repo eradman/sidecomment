@@ -60,7 +60,7 @@ BEGIN
     JOIN account USING (email)
     WHERE ticket_id=NEW.ticket_id AND account_id!=NEW.account_id
   )
-  INSERT INTO notify_reply (email, trigger_reply_id)
+  INSERT INTO reply_queue (email, trigger_reply_id)
   SELECT *
   FROM records;
 

@@ -416,7 +416,7 @@ end
 
 def mark_reply_sent(account_email, reply_ids)
   sql = %{
-    DELETE FROM notify_reply
+    DELETE FROM reply_queue
     WHERE email=$1
     AND trigger_reply_id=ANY($2)
     RETURNING email, trigger_reply_id
@@ -466,17 +466,17 @@ end
 
 def replies_pending_notification
   sql = %{
-    SELECT notify_reply.email AS account_email,
+    SELECT reply_queue.email AS account_email,
            usercode_id,
            ticket_id,
            hostname,
            array_agg(DISTINCT trigger_reply_id) AS reply_ids,
            count(trigger_reply_id) OVER (PARTITION BY ticket_id)
-    FROM notify_reply
+    FROM reply_queue
     JOIN reply ON (trigger_reply_id=reply_id)
     JOIN ticket USING (ticket_id)
     JOIN usercode USING (usercode_id)
-    GROUP BY trigger_reply_id, usercode_id, ticket_id, notify_reply.email, hostname
+    GROUP BY trigger_reply_id, usercode_id, ticket_id, reply_queue.email, hostname
     ORDER BY trigger_reply_id
   }
   db.exec(sql, [])

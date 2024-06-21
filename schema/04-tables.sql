@@ -71,7 +71,7 @@ CREATE TABLE notify_log (
 
 CREATE INDEX lotify_log_sent ON notify_log (sent);
 
-CREATE TABLE notify_reply (
+CREATE TABLE reply_queue (
   email varchar(128) NOT NULL,
   trigger_reply_id integer REFERENCES reply (reply_id) NOT NULL
 );
