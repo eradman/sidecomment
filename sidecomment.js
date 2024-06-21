@@ -279,7 +279,7 @@ document.write(`
     <textarea id="sidecomment_blockquote" disabled rows="3">
     </textarea>
     <br>
-    <label for="sidecomment_comment_area">Comments</label>
+    <label for="sidecomment_comment_area">Proposed Revision:</label>
     <textarea id="sidecomment_comment_area" rows="20" required>
     </textarea>
     <br>
