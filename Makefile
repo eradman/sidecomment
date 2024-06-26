@@ -15,7 +15,9 @@ server_tests/passed: *.rb schema/* server_tests/*.rb server_tests/*.sql views/*
 
 lint:
 	rubocop33
-	npx jshint public/ui.js
+
+format:
+	npx prettier --write '*.js' 'public/*.js'
 
 clean:
 	rm -f .hmac_secret server_tests/.hmac_secret

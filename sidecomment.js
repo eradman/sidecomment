@@ -3,9 +3,7 @@
 if (sidecomment_io_service == undefined)
   var sidecomment_io_service = location.protocol + "//sidecomment.io";
 if (sidecomment_hint_tags == undefined)
-  var sidecomment_hint_tags = [
-    "p", "pre", "blockquote", "ol", "ul", "table"
-  ];
+  var sidecomment_hint_tags = ["p", "pre", "blockquote", "ol", "ul", "table"];
 if (sidecomment_hint_text == undefined)
   var sidecomment_hint_text = `
     Select text to comment &#10564;
@@ -13,8 +11,8 @@ if (sidecomment_hint_text == undefined)
 
 /* REST API */
 
-async function sidecomment_postData(url, data={}) {
-  const response = await fetch(sidecomment_io_service+url, {
+async function sidecomment_postData(url, data = {}) {
+  const response = await fetch(sidecomment_io_service + url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -23,7 +21,7 @@ async function sidecomment_postData(url, data={}) {
     body: JSON.stringify(data)
   });
   if (response.body) return response.json();
-  else return {"error": "empty reply in cross-origin request"};
+  else return { error: "empty reply in cross-origin request" };
 }
 
 /* Selection UI */
@@ -95,9 +93,9 @@ var select_count = 0;
 var mouseout_count = 0;
 var last_selection = null;
 var last_selection_data = {
-  "base": null,
-  "selection": null,
-  "extent": null
+  base: null,
+  selection: null,
+  extent: null
 };
 
 /* Register hover events */
@@ -111,7 +109,7 @@ function sidecomment_displayHint() {
 
     hint_text.innerHTML = sidecomment_hint_text;
     hint.style.top = window.pageYOffset + this.getBoundingClientRect().y + "px";
-    hint.style.left = (window.innerWidth - 200) + "px";
+    hint.style.left = window.innerWidth - 200 + "px";
     hint.style.visibility = "visible";
     hint_border.style.height = Math.min(element_bound.height, 200) + "px";
     mouseout_count++;
@@ -129,8 +127,7 @@ function sidecomment_hideHint(count) {
 }
 
 function sidecomment_registerHints() {
-  if (navigator.userAgent.includes("Mobile"))
-    return;
+  if (navigator.userAgent.includes("Mobile")) return;
 
   sidecomment_hint_tags.forEach((element) => {
     let tags = document.getElementsByTagName(element);
@@ -138,11 +135,14 @@ function sidecomment_registerHints() {
     let tag_idx_max = 10;
 
     while (tag_idx < Math.min(tags.length, tag_idx_max)) {
-      if (tags[tag_idx].closest('nav') == null) {
+      if (tags[tag_idx].closest("nav") == null) {
         tags[tag_idx].addEventListener("mouseover", sidecomment_displayHint);
-        tags[tag_idx].addEventListener("mouseout", () => setTimeout(sidecomment_hideHint, 2000, mouseout_count));
+        tags[tag_idx].addEventListener("mouseout", () =>
+          setTimeout(sidecomment_hideHint, 2000, mouseout_count)
+        );
+      } else {
+        tag_idx_max++;
       }
-      else { tag_idx_max++; }
       tag_idx++;
     }
   });
@@ -150,9 +150,8 @@ function sidecomment_registerHints() {
 setTimeout(sidecomment_registerHints, 500);
 
 /* Register selection events */
-document.onselectionchange = function() {
-  if (navigator.userAgent.includes("Mobile"))
-    return;
+document.onselectionchange = function () {
+  if (navigator.userAgent.includes("Mobile")) return;
 
   last_selection = document.getSelection();
   select_count++;
@@ -161,39 +160,37 @@ document.onselectionchange = function() {
 
 /* Set selection if no more events have been received */
 function finalizeSelection(this_count) {
-  if ((last_selection.rangeCount > 0) && (this_count == select_count)) {
+  if (last_selection.rangeCount > 0 && this_count == select_count) {
     let comment_menu = document.getElementById("comment_menu");
     let range = last_selection.getRangeAt(0);
     let rect = range.getBoundingClientRect();
 
     if (last_selection.toString() == "" || last_selection.rangeCount > 1) {
       comment_menu.style.visibility = "hidden";
-    }
-    else if (rect.width == 0 && rect.height == 0) {
+    } else if (rect.width == 0 && rect.height == 0) {
       comment_menu.style.visibility = "hidden";
-    }
-    else {
+    } else {
       document.getElementById("sidecomment_hint").style.visibility = "hidden";
       comment_menu.style.left = window.pageXOffset + rect.x + "px";
-      comment_menu.style.top = Math.max((window.pageYOffset + rect.y - 35), 0) + "px";
+      comment_menu.style.top =
+        Math.max(window.pageYOffset + rect.y - 35, 0) + "px";
       comment_menu.style.visibility = "visible";
       sidecomment_clearTicket();
 
       /* leading */
-      last_selection_data.base = range
-        .startContainer
-        .textContent
-        .substring(0, range.startOffset);
+      last_selection_data.base = range.startContainer.textContent.substring(
+        0,
+        range.startOffset
+      );
 
       /* selection */
-      last_selection_data.selection = range
-        .toString();
+      last_selection_data.selection = range.toString();
 
       /* trailing */
-      last_selection_data.extent = range
-        .endContainer
-        .textContent
-        .substring(range.endOffset, range.endContainer.textContent.length);
+      last_selection_data.extent = range.endContainer.textContent.substring(
+        range.endOffset,
+        range.endContainer.textContent.length
+      );
     }
   }
 }
@@ -294,7 +291,8 @@ document.write(`
 var sidecomment_div = document.getElementById("sidecomment_div");
 var sidecomment_ext_link = document.getElementById("sidecomment_ext_link");
 
-sidecomment_ext_link.href = sidecomment_io_service + "/comment?hostname=" + window.location.hostname;
+sidecomment_ext_link.href =
+  sidecomment_io_service + "/comment?hostname=" + window.location.hostname;
 
 window.addEventListener("load", (event) => {
   let btn_close = document.getElementById("sidecomment_btn_close");
@@ -309,8 +307,8 @@ window.addEventListener("load", (event) => {
 
 window.addEventListener("resize", (event) => {
   var w = window.innerWidth - 40;
-  sidecomment_div.style.left = w/2 + "px";
-  sidecomment_div.style.width = w/2 + "px";
+  sidecomment_div.style.left = w / 2 + "px";
+  sidecomment_div.style.width = w / 2 + "px";
 });
 
 var offset = { x: 0, y: 0 };
@@ -335,7 +333,8 @@ function sidecomment_mouseUp(e) {
 window.onkeydown = function (e) {
   let btn_close = document.getElementById("sidecomment_btn_close");
 
-  if (e.keyCode == 27) // ESC
+  if (e.keyCode == 27)
+    // ESC
     sidecomment_btn_close.click(e);
 };
 
@@ -343,7 +342,9 @@ sidecomment_showTicket = function (e) {
   let commentcode = document.getElementById("sidecomment_commentcode");
 
   var w = window.innerWidth - 40;
-  var sidecomment_blockquote = document.getElementById("sidecomment_blockquote");
+  var sidecomment_blockquote = document.getElementById(
+    "sidecomment_blockquote"
+  );
 
   if (last_selection == null) return;
   sidecomment_blockquote.innerHTML = last_selection.toString();
@@ -351,8 +352,8 @@ sidecomment_showTicket = function (e) {
 
   // initial position
   sidecomment_div.style.top = "30px";
-  sidecomment_div.style.left = w/2 + "px";
-  sidecomment_div.style.width = w/2 + "px";
+  sidecomment_div.style.left = w / 2 + "px";
+  sidecomment_div.style.width = w / 2 + "px";
   sidecomment_div.style.display = "block";
 };
 
@@ -365,21 +366,22 @@ function sidecomment_submitTicket() {
 
   usercode_id = commentcode.value;
   if (usercode_id.length == 11) {
-    var sidecomment_blockquote = document.getElementById("sidecomment_blockquote");
+    var sidecomment_blockquote = document.getElementById(
+      "sidecomment_blockquote"
+    );
 
-    sidecomment_postData("/ticket",
-            {"usercode_id": usercode_id,
-             "url": window.location.href,
-             "base": sidecomment_blockquote.data.base,
-             "selection": sidecomment_blockquote.data.selection,
-             "extent": sidecomment_blockquote.data.extent,
-             "comment_area": comment_area.value,
-             "sitecode_id": sidecomment_sitecode})
-    .then(data => {
+    sidecomment_postData("/ticket", {
+      usercode_id: usercode_id,
+      url: window.location.href,
+      base: sidecomment_blockquote.data.base,
+      selection: sidecomment_blockquote.data.selection,
+      extent: sidecomment_blockquote.data.extent,
+      comment_area: comment_area.value,
+      sitecode_id: sidecomment_sitecode
+    }).then((data) => {
       if ("error" in data) {
         ticket_error.innerText = data.error;
-      }
-      else {
+      } else {
         ticket_error.innerText = "";
         var url = sidecomment_io_service + "/tickets/" + data.usercode_id;
         ticket_status.href = url;

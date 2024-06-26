@@ -1,32 +1,31 @@
-
 /* REST API */
-async function postData(url, data={}) {
+async function postData(url, data = {}) {
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   });
   return response.json();
 }
 
-async function patchData(url, data={}) {
+async function patchData(url, data = {}) {
   const response = await fetch(url, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   });
   return response.json();
 }
 
-async function putData(url, data={}) {
+async function putData(url, data = {}) {
   const response = await fetch(url, {
-    method: 'PUT',
+    method: "PUT",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json"
     },
     body: JSON.stringify(data)
   });
@@ -35,10 +34,10 @@ async function putData(url, data={}) {
 
 async function getData(url) {
   const response = await fetch(url, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'text/html'
-    },
+      "Content-Type": "text/html"
+    }
   });
   return response.text();
 }
