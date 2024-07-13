@@ -1,5 +1,3 @@
-# Copyright (c) 2021-2022 Ratical Software
-
 require 'sinatra'
 require 'sinatra/cookies'
 require 'tilt/haml'
@@ -381,58 +379,5 @@ post '/ticket' do
     r.to_json
   rescue StandardError => e
     { error: e }.to_json
-  end
-end
-
-#
-# System Automation
-#
-
-post '/api/archive/records' do
-  content_type 'text/plain'
-
-  begin
-    archive_records
-    halt 304
-  rescue StandardError => e
-    e.full_message
-  end
-end
-
-post '/api/notify/tickets' do
-  content_type 'application/json'
-
-  tickets = tickets_pending_notification
-  tickets.each do |row|
-    usercodes = PG::TextDecoder::Array.new.decode(row['usercode_ids'])
-    send_open_summary(row['sitecode_email'], row['sitecode_id'],
-                      row['hostname'], usercodes,
-                      row['count'].to_i)
-    mark_ticket_sent(usercodes)
-  end
-  if tickets.count.positive?
-    tickets.to_a.to_json
-  else
-    halt 304
-  end
-end
-
-post '/api/notify/replies' do
-  content_type 'application/json'
-
-  replies = replies_pending_notification
-  replies.each do |row|
-    reply_ids = PG::TextDecoder::Array.new.decode(row['reply_ids'])
-    send_reply_summary(row['account_email'], row['hostname'],
-                       row['usercode_id'], row['ticket_id'],
-                       row['count'].to_i)
-    deleted = mark_reply_sent(row['account_email'], reply_ids)
-    halt 500, "{'error', 'no match for #{row['account_email']},#{row['reply_ids']}'}" if deleted.count.zero?
-  end
-
-  if replies.count.positive?
-    replies.to_a.to_json
-  else
-    halt 304
   end
 end

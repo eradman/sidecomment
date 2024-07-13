@@ -31,4 +31,5 @@ ruby=${RUBY:-ruby}
 $ruby verify.rb
 DATABASE_URL=${url} $ruby data.rb
 DATABASE_URL=${url} $ruby main.rb
+DATABASE_URL=${url} $ruby notify.rb
 DATABASE_URL=${url} $ruby authorized.rb

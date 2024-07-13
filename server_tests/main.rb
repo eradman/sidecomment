@@ -160,19 +160,4 @@ class MainTest < Minitest::Test
     assert_equal last_response.headers['Access-Control-Allow-Methods'], 'POST'
     assert last_response.body['ticket_id']
   end
-
-  # API
-
-  def test_api_notify_tickets
-    post '/api/notify/tickets'
-    assert last_response.ok?
-    assert_equal last_response.content_type, 'application/json'
-    assert last_response.body[0]
-  end
-
-  def test_api_notify_replies
-    post '/api/notify/replies'
-    assert last_response.ok?
-    assert_equal last_response.content_type, 'application/json'
-  end
 end

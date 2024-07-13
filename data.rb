@@ -1,5 +1,3 @@
-# Copyright (c) 2021-2022 Ratical Software
-
 require 'pg'
 
 $pg_url = ENV['DATABASE_URL'] || 'postgresql://webui@localhost/sidecomment'
@@ -11,13 +9,6 @@ def db
   else
     $db = PG.connect($pg_url_alt)
   end
-end
-
-def db_system
-  uri = URI($pg_url_alt || $pg_url)
-  uri.user = 'system'
-  $db_system&.close
-  $db_system = PG.connect(uri.to_s, 'fallback_application_name' => 'ruby')
 end
 
 def usercode(usercode)
@@ -403,6 +394,17 @@ def create_issue(email, origin, params)
   r[0] if r.count.positive?
 end
 
+def record_notification(mailto, subject, remote_addr)
+  sql = %{
+    INSERT INTO notify_log (mailto, subject, remote_addr)
+    VALUES ($1, $2, $3)
+    RETURNING sent;
+  }
+  db.exec(sql, [mailto, subject, remote_addr])
+end
+
+# Periodic notifications
+
 def mark_ticket_sent(usercodes)
   sql = %{
     UPDATE ticket
@@ -424,28 +426,6 @@ def mark_reply_sent(account_email, reply_ids)
   db.exec(sql, [account_email, PG::TextEncoder::Array.new.encode(reply_ids)])
 end
 
-def record_notification(mailto, subject, remote_addr)
-  sql = %{
-    INSERT INTO notify_log (mailto, subject, remote_addr)
-    VALUES ($1, $2, $3)
-    RETURNING sent;
-  }
-  db.exec(sql, [mailto, subject, remote_addr])
-end
-
-# system tasks
-
-def archive_records
-  sql = %{
-    BEGIN;
-    CALL prune_usercodes('30 days'::interval);
-    CALL archive_tickets('30 days'::interval);
-    REFRESH MATERIALIZED VIEW archive_tag_summary;
-    COMMIT;
-  }
-  db_system.exec(sql)
-end
-
 def tickets_pending_notification
   sql = %{
     SELECT sitecode.email AS sitecode_email,
@@ -460,6 +440,7 @@ def tickets_pending_notification
     AND sitecode.verified='t'
     AND ticket.closed IS NULL
     GROUP BY sitecode.email, sitecode.sitecode_id, usercode.hostname
+    ORDER BY sitecode_email
   }
   db.exec(sql, [])
 end
@@ -477,7 +458,7 @@ def replies_pending_notification
     JOIN ticket USING (ticket_id)
     JOIN usercode USING (usercode_id)
     GROUP BY trigger_reply_id, usercode_id, ticket_id, reply_queue.email, hostname
-    ORDER BY trigger_reply_id
+    ORDER BY account_email
   }
   db.exec(sql, [])
 end

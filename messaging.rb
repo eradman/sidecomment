@@ -17,7 +17,7 @@ def send_msg(mailto, subject, msg)
     #{msg}
   MSG
 
-  return unless Sinatra::Base.environment == :production
+  return unless ENV['RACK_ENV'] == 'production'
 
   record_notification(mailto, subject, request.ip)
 
