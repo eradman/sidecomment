@@ -30,10 +30,6 @@ CREATE TRIGGER archive_insert_ticket
 AFTER INSERT OR UPDATE ON archive.ticket
 FOR EACH ROW EXECUTE PROCEDURE archive_update_log();
 
-CREATE TRIGGER archive_insert_tag
-AFTER INSERT OR UPDATE ON archive.tag
-FOR EACH ROW EXECUTE PROCEDURE archive_update_log();
-
 CREATE OR REPLACE PROCEDURE prune_usercodes(interval_spec interval)
 LANGUAGE sql
 AS $$
@@ -54,15 +50,14 @@ AS $$
 DECLARE
   ticket_id integer;
   usercode_id shortkey;
-  tag_id shortkey;
   reply_count integer;
 BEGIN
-  FOR ticket_id, usercode_id, tag_id, reply_count IN
-    SELECT ticket.ticket_id, ticket.usercode_id, ticket.tag_id, count(reply_id) AS reply_count
+  FOR ticket_id, usercode_id, reply_count IN
+    SELECT ticket.ticket_id, ticket.usercode_id, count(reply_id) AS reply_count
     FROM ticket
     LEFT JOIN reply USING (ticket_id)
     WHERE now() - ticket.closed > interval_spec
-    GROUP BY ticket.ticket_id, ticket.usercode_id, ticket.tag_id
+    GROUP BY ticket.ticket_id, ticket.usercode_id
   LOOP
     EXECUTE format(
         'INSERT INTO archive.usercode '
@@ -71,14 +66,8 @@ BEGIN
         'ON CONFLICT DO NOTHING', usercode_id
     );
     EXECUTE format(
-        'INSERT INTO archive.tag '
-        'SELECT tag_id, name, created, modified '
-        'FROM tag WHERE tag_id=%L '
-        'ON CONFLICT DO NOTHING', tag_id
-    );
-    EXECUTE format(
         'INSERT INTO archive.ticket '
-        'SELECT ticket_id, created, usercode_id, sitecode_id, url, closed, tag_id, %s '
+        'SELECT ticket_id, created, usercode_id, sitecode_id, url, closed, %s '
         'FROM ticket WHERE ticket_id=%s '
         'ON CONFLICT DO NOTHING', reply_count, ticket_id
     );

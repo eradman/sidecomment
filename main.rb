@@ -240,11 +240,11 @@ end
 get '/user/:username' do
   decoded_token = read_access_token(cookies[:access_token])
   account = fetch_account(params['username'], :username)
-  tag_stats = fetch_tag_stats(account['email'])
+  user_stats = fetch_user_stats(account['email'])
   haml :user_partial, locals: { local_sitecode: local_sitecode,
                                 account: account,
                                 account_details: params['account_details'],
-                                tag_stats: tag_stats,
+                                user_stats: user_stats,
                                 decoded_token: decoded_token }
 end
 
@@ -329,19 +329,18 @@ get '/issue_summary/:sitecode_id' do
   haml :issue_summary_partial, locals: { tickets: tickets }
 end
 
-put '/tag' do
+patch '/ticket/:ticket_id' do
   content_type :json
   decoded_token = read_access_token(cookies[:access_token])
   halt 401, decoded_token if decoded_token.key?('error')
 
   begin
-    data = JSON.parse(request.body.read)
-    data['tag'] = nil if data['tag'] == ''
-    r = tag_and_close(data['ticket_id'], data['tag'])
+    JSON.parse(request.body.read)
+    r = close_ticket(params['ticket_id'])
     if r['url'].nil?
-      send_issue_close_summary(data['ticket_id'])
+      send_issue_close_summary(params['ticket_id'])
     else
-      send_ticket_close_summary(data['ticket_id'])
+      send_ticket_close_summary(params['ticket_id'])
     end
     r.to_json
   rescue StandardError => e

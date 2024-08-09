@@ -25,15 +25,6 @@ CREATE TABLE usercode (
   verified boolean NOT NULL DEFAULT 'f'
 );
 
-CREATE TABLE tag (
-  tag_id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name varchar(20) NOT NULL UNIQUE,
-  created timestamp with time zone NOT NULL DEFAULT now(),
-  modified timestamp with time zone NOT NULL DEFAULT now()
-);
-
-SELECT setval('tag_tag_id_seq', 1000);
-
 CREATE TABLE ticket (
   ticket_id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   created timestamp with time zone NOT NULL DEFAULT now(),
@@ -46,7 +37,6 @@ CREATE TABLE ticket (
   topic varchar(30),
   comment_area text NOT NULL,
   closed timestamp with time zone,
-  tag_id integer REFERENCES tag (tag_id),
   summary_sent boolean NOT NULL DEFAULT 'f'
 );
 
@@ -96,13 +86,6 @@ CREATE TABLE archive.usercode (
   hostname varchar(128) NOT NULL
 );
 
-CREATE TABLE archive.tag (
-  tag_id bigint PRIMARY KEY,
-  name varchar(20) NOT NULL UNIQUE,
-  created timestamp with time zone NOT NULL,
-  modified timestamp with time zone NOT NULL
-);
-
 CREATE TABLE archive.ticket (
   ticket_id bigint PRIMARY KEY,
   created timestamp with time zone NOT NULL,
@@ -110,6 +93,5 @@ CREATE TABLE archive.ticket (
   sitecode_id uuid NOT NULL,
   url varchar(4096),
   closed timestamp with time zone,
-  tag_id integer REFERENCES tag (tag_id),
   reply_count integer
 );

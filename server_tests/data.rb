@@ -44,8 +44,6 @@ class DataTest < Minitest::Test
 
     r = db.exec %( select * FROM archive.ticket; )
     assert_equal 4, r.count
-    r = db.exec %( select * FROM archive.tag; )
-    assert_equal 1, r.count
     r = db.exec %( select * FROM archive.usercode; )
     assert_equal 3, r.count
   end
@@ -89,8 +87,7 @@ class DataTest < Minitest::Test
         'usercode_email' => 'eradman@eradman.com',
         'sitecode_email' => 'ericshane@eradman.com',
         'closed' => nil,
-        'username' => 'eradman',
-        'tag_name' => nil },
+        'username' => 'eradman' },
       { 'ticket_id' => '51',
         'created' => 'August 08, 2021',
         'url' => 'http://raticalsoftware.com/',
@@ -101,8 +98,7 @@ class DataTest < Minitest::Test
         'usercode_email' => 'eradman@eradman.com',
         'sitecode_email' => 'ericshane@eradman.com',
         'username' => 'eradman',
-        'closed' => 'August 08, 2021',
-        'tag_name' => 'typo-hawk' }
+        'closed' => 'August 08, 2021' }
     ]
     fetch_tickets('4dEo73XK2T8').each do |row|
       assert_equal expected.pop, row
@@ -121,7 +117,6 @@ class DataTest < Minitest::Test
       'author' => 'eradman@eradman.com',
       'username' => 'eradman',
       'closed' => nil,
-      'tag_name' => nil,
       'sitecode_id' => '5c188e73-bbc8-4c1b-96c2-d4a195bd6cef',
       'usercode_id' => '4dEo73XK2T8'
     }
@@ -139,7 +134,6 @@ class DataTest < Minitest::Test
       'author' => 'eradman@eradman.com',
       'username' => 'eradman',
       'closed' => 'August 08, 2021',
-      'tag_name' => 'typo-hawk',
       'sitecode_id' => '5c188e73-bbc8-4c1b-96c2-d4a195bd6cef',
       'usercode_id' => '4dEo73XK2T8'
     }
@@ -290,22 +284,17 @@ class DataTest < Minitest::Test
     assert r['last_auth']
   end
 
-  def test_tag_and_close
-    r = tag_and_close(50, nil)
-    refute r['tag_id']
-
-    r = tag_and_close(50, 'typo-sleuth')
-    assert r['tag_id'].to_i >= 1000
+  def test_close_ticket
+    r = close_ticket(50)
+    assert r['url']
   end
 
-  def test_fetch_tag_stats
+  def test_fetch_user_stats
     expected = [
-      { 'name' => 'typo-hawk', 'count' => '1' },
-      { 'name' => 'editor-in-chief', 'count' => '1' },
-      { 'name' => 'logician', 'count' => '2' }
+      { 'name' => '2021', 'count' => '4' }
     ]
 
-    fetch_tag_stats('ericshane@eradman.com').each do |row|
+    fetch_user_stats('ericshane@eradman.com').each do |row|
       assert_equal expected.pop, row
     end
   end

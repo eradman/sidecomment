@@ -6,9 +6,9 @@
     %span{:title=>"Location"}
       = account['location']
 %hr
-- if tag_stats.count > 0
+- if user_stats.count > 0
   %table
-    - tag_stats.each do |row|
+    - user_stats.each do |row|
       %tr
         %td
           = row['name']

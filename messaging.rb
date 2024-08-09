@@ -119,8 +119,6 @@ def send_ticket_close_summary(ticket_id)
   msg = <<~MSG
     Created: #{ticket['created']}
 
-    Tag: #{ticket['tag_name']}
-
     URL: #{ticket['url']}
 
     Selection
@@ -144,8 +142,6 @@ def send_issue_close_summary(ticket_id)
 
   msg = <<~MSG
     Created: #{ticket['created']}
-
-    Tag: #{ticket['tag_name']}
 
     Comments
 

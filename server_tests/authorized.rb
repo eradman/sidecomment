@@ -94,28 +94,4 @@ class AuthenticatedTest < Minitest::Test
     assert_equal last_response.content_type, 'application/json'
     assert last_response.body.to_json['reply_id']
   end
-
-  def test_put_tag
-    # ticket
-    data = {
-      ticket_id: 50,
-      tag: 'typo-hawlk'
-    }
-    set_cookie @access_token
-    put '/tag', data.to_json, 'CONTENT_TYPE' => 'application/json'
-    assert last_response.ok?
-    assert_equal last_response.content_type, 'application/json'
-    assert last_response.body['tag_id']
-
-    # issue
-    data = {
-      ticket_id: 52,
-      tag: 'new-feature'
-    }
-    set_cookie @access_token
-    put '/tag', data.to_json, 'CONTENT_TYPE' => 'application/json'
-    assert last_response.ok?
-    assert_equal last_response.content_type, 'application/json'
-    assert last_response.body['tag_id']
-  end
 end

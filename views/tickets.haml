@@ -47,12 +47,10 @@
         reply_text.value = "";
       }
 
-      function tagAndClose(ticket_id, reload) {
+      function closeTicket(ticket_id, reload) {
         var tag_text = document.getElementById("tag_"+ticket_id);
 
-        putData('/tag',
-                {'ticket_id': ticket_id,
-                 'tag': tag_text.value})
+        patchData('/ticket/' + ticket_id, {})
         .then(data => {
             var status_span = document.getElementById("form_status_"+ticket_id);
             if ('error' in data) {
@@ -135,14 +133,8 @@
 
             - if authenticated_email == row['sitecode_email']
               %span.right
-                %span.status
-                  tag-and-close
-                %input{:type=>"text", :size=>"20", :maxlength=>"20",
-                       :pattern=>"^[a-z]+(-[a-z]+)?(-[a-z]+)?",
-                       :title=>"chars: 'a-z', '-' size: 3-20",
-                       :id=>"tag_"+row['ticket_id']}
-                %input{:type=>"button", :value=>"Close",
-                       :onclick=>"return tagAndClose("+row['ticket_id']+", true)"}
+                %input{:type=>"button", :value=>"Close Ticket",
+                       :onclick=>"return closeTicket("+row['ticket_id']+", true)"}
 
       %h2 Closed
       - tickets.reject{|row| row['closed']==nil}.each do |row|
@@ -157,16 +149,7 @@
                 closed
                 = row['closed']
           %br
-          %form
-            Tag:
-            %input{:type=>"text", :size=>"20", :maxlength=>"20",
-                   :pattern=>"^[a-z]+(-[a-z]+)?(-[a-z]+)?",
-                   :title=>"chars: 'a-z', '-' size: 3-20",
-                   :id=>"tag_"+row['ticket_id'],
-                   :value=>row['tag_name']}
-            %input{:type=>"button", :value=>"Update",
-                   :onclick=>"return tagAndClose("+row['ticket_id']+", false)"}
-            %span.status{:id=>"form_status_" + row['ticket_id']}
+          %span.status{:id=>"form_status_" + row['ticket_id']}
 
       %p
         %em Tickets are archived after 30 days

@@ -190,8 +190,8 @@ textarea {
 }
 
 textarea.wide {
-  width: 100%;
-  margin-right: 3em;
+  width: 99%;
+  margin-right: 4em;
 }
 
 /* normal (light) -> hover (medium) <- focus (dark) */
@@ -322,7 +322,6 @@ div#notecard {
   display: block;
   min-width: 2in;
   max-width: 10in;
-  font-size: 0.9em;
   padding-bottom: 0.8em;
 }
 

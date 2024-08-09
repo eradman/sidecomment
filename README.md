@@ -60,7 +60,6 @@ extension can be used to archive records and summarize results
 
     CALL prune_usercodes('30 days'::interval);
     CALL archive_tickets('30 days'::interval);
-    REFRESH MATERIALIZED VIEW archive_tag_summary;
 
 History
 -------

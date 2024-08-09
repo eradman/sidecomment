@@ -81,10 +81,8 @@ def fetch_tickets(usercode)
          sitecode.email AS sitecode_email,
          account.username,
          topic,
-         to_char(ticket.closed, 'FMMonth DD, YYYY') AS closed,
-         tag.name AS tag_name
+         to_char(ticket.closed, 'FMMonth DD, YYYY') AS closed
     FROM ticket
-    LEFT JOIN tag USING (tag_id)
     JOIN usercode USING (usercode_id)
     JOIN sitecode USING (sitecode_id)
     JOIN account ON (account.email = usercode.email)
@@ -102,11 +100,9 @@ def fetch_ticket(ticket_id)
          account.email AS author,
          account.username,
          to_char(ticket.closed, 'FMMonth DD, YYYY') AS closed,
-         tag.name AS tag_name,
          sitecode_id,
          usercode_id
     FROM ticket
-    LEFT JOIN tag USING (tag_id)
     JOIN usercode USING (usercode_id)
     JOIN account USING (email)
     WHERE ticket_id=$1
@@ -246,23 +242,21 @@ def fetch_issue_summary(sitecode_id)
   db.exec(sql, [sitecode_id])
 end
 
-def fetch_tag_stats(email)
+def fetch_user_stats(email)
   sql = %{
-    WITH all_tags AS (
-        SELECT tag.name
+    WITH stats AS (
+        SELECT date_part('year', ticket.created) AS name
         FROM ticket
         JOIN usercode USING (usercode_id)
-        JOIN tag USING (tag_id)
         WHERE email=$1
       UNION ALL
-        SELECT tag.name
+        SELECT date_part('year', ticket.created)
         FROM archive.ticket
         JOIN archive.usercode USING (usercode_id)
-        JOIN tag USING (tag_id)
         WHERE email=$1
     )
     SELECT name, count(name)
-    FROM all_tags
+    FROM stats
     GROUP BY name
     ORDER BY count DESC, name
   }
@@ -346,31 +340,14 @@ def update_account(email, params)
   r[0] if r.count.positive?
 end
 
-def tag_and_close(ticket_id, tag)
-  if tag
-    sql = %{
-      INSERT INTO tag (name)
-      VALUES ($1)
-      ON CONFLICT (name) DO NOTHING
-    }
-    db.exec(sql, [tag])
-
-    sql = %{
-      UPDATE ticket
-      SET closed=now(), tag_id=(SELECT tag_id FROM tag WHERE name=$2)
-      WHERE ticket_id=$1
-      RETURNING tag_id, url
-    }
-    r = db.exec(sql, [ticket_id, tag])
-  else
-    sql = %{
-      UPDATE ticket
-      SET closed=now(), tag_id=NULL
-      WHERE ticket_id=$1
-      RETURNING tag_id, url
-    }
-    r = db.exec(sql, [ticket_id])
-  end
+def close_ticket(ticket_id)
+  sql = %{
+    UPDATE ticket
+    SET closed=now()
+    WHERE ticket_id=$1
+    RETURNING url
+  }
+  r = db.exec(sql, [ticket_id])
 
   r[0] if r.count.positive?
 end
