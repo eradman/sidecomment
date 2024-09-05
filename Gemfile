@@ -1,5 +1,4 @@
 source 'https://rubygems.org'
-ruby '3.3.0'
 
 gem 'haml', '5.2.2'
 gem 'jwt'
