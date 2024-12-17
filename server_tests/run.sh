@@ -3,7 +3,7 @@
 trap 'printf "$0: exit code $? on line $LINENO\n" >&2; exit 1' ERR
 cd $(dirname $0)
 
-url=$(pg_tmp -o "-c shared_preload_libraries=pg_stat_statements")
+url=$(pg_tmp)
 psql="psql $url -v ON_ERROR_STOP=1 -q"
 echo "Using ${url}"
 

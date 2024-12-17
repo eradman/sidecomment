@@ -25,4 +25,4 @@ clean:
 	rm -f server_tests/passed client_tests/passed
 	rm -f run/* log/*
 
-.PHONY: all clean lint
+.PHONY: all clean format lint
