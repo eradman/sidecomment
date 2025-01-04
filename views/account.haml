@@ -109,7 +109,7 @@
           %form{:method=>"post"}
             %table
               %tr
-                %td E-mail Address
+                %td Email Address
                 %td
                   %input{:name=>"email", :type=>"text", :size=>"30", :value=>params[:email]}
               %tr
@@ -120,7 +120,7 @@
           - if params[:email]
             %style
               input { pointer-events: none; color: #666; }
-            &#10004; One-time link sent by e-mail.
+            &#10004; One-time link sent by email.
 
     %footer
       %a{:href=>"http://raticalsoftware.com"} Ratical Software

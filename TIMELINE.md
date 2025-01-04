@@ -82,10 +82,10 @@ June 4, 2022
 May 28, 2022
 ------------
 
-> Better organization around e-mail notification
+> Better organization around email notification
 
-* Exempt 127.0.0.1 from e-mail rate limits
-* New API endpoint to format and e-mail replies
+* Exempt 127.0.0.1 from email rate limits
+* New API endpoint to format and email replies
 * Correct local port for API calls, use AWK to add newlines
 * Avoid string interpolation by passing arrays as parameters
 * Separate rate-limit and archive-schema logic into separate files
@@ -157,11 +157,11 @@ April 2, 2022
 > Registration is bot-resistant
 
 * Ensure that usercode domain is of type host
-* Disable e-mail while I sort out defenses against bots
+* Disable email while I sort out defenses against bots
 * Present validation errors on /comment and /install pages
 * Use a less jarring color scheme for proxy errors
 * Use DNS resolver for basic hostname validation
-* Log e-mail notifications and assert on minute and hourly rate limits
+* Log email notifications and assert on minute and hourly rate limits
 
 March 27, 2022
 --------------
@@ -203,7 +203,7 @@ March 5, 2022
 * Better sidecomment-source archiving
 * Ignore selections with have no width and height (input boxes)
 * Eliminate relative date formatting
-* Avoid duplicate entries in ticket open summary e-mail
+* Avoid duplicate entries in ticket open summary email
 
 February 26, 2022
 -----------------
@@ -211,10 +211,10 @@ February 26, 2022
 > Improved notifications
 
 * Install daily database backup to home storage
-* Change close e-mail subject to match open e-mail
+* Change close email subject to match open email
 * Replaced wholeText with textContent
 * Ignore selections with a rangeCount > 1
-* Separate tag-and-close e-mail for ticket vs. an issue
+* Separate tag-and-close email for tickets and issues
 
 February 19, 2022
 -----------------
@@ -223,8 +223,8 @@ February 19, 2022
 
 * Customizable hints shown on right-side
 * Rename global var `sidecomment_key` to `sidecomment_sitecode`
-* Change comment area to to use the term "usercode"
-* Ensure most variables and functions are are prefixed with 'sidecomment_'
+* Change comment area to use the term "usercode"
+* Ensure most variables and functions are prefixed with 'sidecomment_'
 * Account for page scroll offset when displaying '+'
 * Use fixed positioning for comment div
 * Move scripts to the bottom of pages to avoid reparse warnings
@@ -248,11 +248,11 @@ February 5, 2022
 
 > More coherent account management
 
-* Basic new ticket/issue e-mail alert (deferred 30 min from last update)
-* Cron job to send e-mail notifications
+* Basic new ticket/issue email alert (deferred 30 min from last update)
+* Cron job to send email notifications
 * Delete replies when archiving tickets
 * Record count of replies in archive.tickets
-* Display e-mail address in disabled form when logged in
+* Display email address in disabled form when logged in
 * Add account column to reply table and link when adding comments
 * Add 3-digit random number to new account username
 
@@ -299,7 +299,7 @@ January 8, 2022
 > Sepearate concerns and maintain minimal design language
 
 * Formatted closed on date, display archive notice
-* Include verification link in new sitecode e-mail
+* Include verification link in new sitecode email
 * Remove Update Profile show/hide button on Account page
 * Change notecard to a class, make each username a link
 * Split Sitecodes from Account pages
@@ -325,7 +325,7 @@ December 25, 2021
 > First use on an external site
 
 * Fix race condition in tests
-* Send e-mail when ticket is closed
+* Send email when ticket is closed
 * Introduce a javascript variable for changing the official service url
 * Enable cross-site resource sharing
 * Sidecomment configured on http://raticalsoftware.com
@@ -388,7 +388,7 @@ November 20, 2021
 
 * Use install page to update the list of domains
 * Add tests to verify authorized requests
-* Send e-mail only in production mode
+* Send email only in production mode
 * Add account.username field
 * sketch UI to editing account details
 

@@ -80,7 +80,7 @@ post '/comment' do
     if decoded_token['email'].nil?
       otp = reset_otp(params['email'])
       send_usercode_confirmation(params[:email], params['hostname'], usercode, otp)
-      message = 'Usercode confirmation sent by e-mail.'
+      message = 'Usercode confirmation sent by email.'
     else
       active = activate_user(usercode)
       raise "usercode #{usercode} not found" unless active == 't'
@@ -117,7 +117,7 @@ post '/install' do
     sitecode = register_site(params[:email], domains)
     otp = reset_otp(params[:email])
     send_sitecode_confirmation(params[:email], domains, sitecode, otp)
-    message = 'Sitecode confirmation sent by e-mail.'
+    message = 'Sitecode confirmation sent by email.'
   rescue StandardError => e
     message = e.to_s
     message = "ERROR: #{message}" unless message.include? 'ERROR'

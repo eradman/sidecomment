@@ -40,7 +40,7 @@
         A comment code is used to submit a ticket on web sites using
         sidecomment.io.
       %ul
-        %li A valid e-mail address is required, but personal information is not
+        %li A valid email address is required, but personal information is not
         %li Comments are only sent to the site author, but you may share the link
 
       %h2 Generate Usercode
@@ -48,7 +48,7 @@
         %form{:method=>"post"}
           %table
             %tr
-              %td E-mail Address
+              %td Email Address
               %td
                 %input{:name=>"email", :type=>"email", :required=>true,
                        :value=>params[:email]||decoded_token['email'],

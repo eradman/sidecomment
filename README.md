@@ -16,8 +16,8 @@ Constraints
 Authorization
 
 * Lazy signup, no password
-* Anonymous; only a valid e-mail
-* Rate limit e-mail (per minute and per hour) to avoid abuse
+* Anonymous; only a valid email
+* Rate limit email (per minute and per hour) to avoid abuse
 
 Requirements
 ------------
