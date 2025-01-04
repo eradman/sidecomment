@@ -55,3 +55,16 @@ extension can be used to archive records and summarize results
 
     CALL prune_usercodes('30 days'::interval);
     CALL archive_tickets('30 days'::interval);
+
+Development
+-----------
+
+To start a development environment in tmux(1)
+
+    ./start-tmux-dev.sh
+
+This create three windows
+
+1. Edit and run unit tests
+2. Development server with auto-reload
+3. Database connection
