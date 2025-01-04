@@ -34,15 +34,10 @@ Installation
 Database Initialization
 -----------------------
 
-Reset everything
-
-    dropdb sidecomment
-
 Initialize database
 
     psql -f schema/roles.sql
     psql -c 'CREATE DATABASE sidecomment OWNER sidecomment;'
-    psql -c 'ALTER USER sidecomment SUPERUSER;'
     for f in schema/??-*.sql; do
         psql -q -U sidecomment -f $f
     done
@@ -60,11 +55,3 @@ extension can be used to archive records and summarize results
 
     CALL prune_usercodes('30 days'::interval);
     CALL archive_tickets('30 days'::interval);
-
-History
--------
-
-See [TIMELINE.md](TIMELINE.md) for the history of this project.
-
-Source code for `sidecomment.io` is licensed under an ISC-style license.
-Copyright 2021 Eric Radman / Ratical Software.
