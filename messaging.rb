@@ -19,7 +19,11 @@ def send_msg(mailto, subject, msg)
 
   return unless ENV['RACK_ENV'] == 'production'
 
-  record_notification(mailto, subject, request.ip)
+  if defined? request
+    record_notification(mailto, subject, request.ip)
+  else
+    record_notification(mailto, subject, '127.0.0.1')
+  end
 
   Net::SMTP.start('localhost') do |smtp|
     smtp.send_message msgstr, 'www@sidecomment.io', mailto

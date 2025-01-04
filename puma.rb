@@ -24,6 +24,7 @@ before_fork do
       sleep 600
     rescue StandardError => e
       log $stderr, 'error', e.full_message
+      sleep 10
       next
     end
   end
