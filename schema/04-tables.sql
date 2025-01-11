@@ -72,13 +72,6 @@ CREATE TABLE reply_queue (
 
 CREATE SCHEMA archive;
 
-CREATE TABLE archive.operation_log (
-  event_time timestamp with time zone NOT NULL DEFAULT now(),
-  operation text,
-  table_name text,
-  primary_key text
-);
-
 CREATE TABLE archive.usercode (
   usercode_id shortkey PRIMARY KEY,
   created timestamp with time zone NOT NULL,

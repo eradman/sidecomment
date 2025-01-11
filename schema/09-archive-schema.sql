@@ -2,34 +2,6 @@
  * archiving
  */
 
-CREATE OR REPLACE FUNCTION archive_update_log() RETURNS trigger
-  LANGUAGE plpgsql
-  AS
-$$
-DECLARE
-  col TEXT = (
-    SELECT attname
-    FROM pg_index
-    JOIN pg_attribute ON
-        attrelid = indrelid
-        AND attnum = ANY(indkey)
-    WHERE indrelid = TG_RELID AND indisprimary
-  );
-BEGIN
-  INSERT INTO archive.operation_log (operation, table_name, primary_key)
-  VALUES(TG_OP, TG_TABLE_NAME, row_to_json(NEW) ->> col);
-  RETURN NEW;
-END;
-$$;
-
-CREATE TRIGGER archive_insert_usercode
-AFTER INSERT OR UPDATE ON archive.usercode
-FOR EACH ROW EXECUTE PROCEDURE public.archive_update_log();
-
-CREATE TRIGGER archive_insert_ticket
-AFTER INSERT OR UPDATE ON archive.ticket
-FOR EACH ROW EXECUTE PROCEDURE archive_update_log();
-
 CREATE OR REPLACE PROCEDURE prune_usercodes(interval_spec interval)
 LANGUAGE sql
 AS $$

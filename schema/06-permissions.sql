@@ -36,6 +36,5 @@ GRANT SELECT,DELETE ON reply TO system;
 GRANT SELECT,DELETE ON ticket TO system;
 GRANT SELECT,DELETE ON usercode TO system;
 
-GRANT SELECT,INSERT ON archive.operation_log TO system;
 GRANT SELECT,INSERT ON archive.ticket TO system;
 GRANT SELECT,INSERT ON archive.usercode TO system;
