@@ -25,4 +25,7 @@ clean:
 	rm -f server_tests/passed client_tests/passed
 	rm -f run/* log/*
 
-.PHONY: all clean format lint
+distclean:
+	rm -f *.lock
+
+.PHONY: all clean distclean format lint
