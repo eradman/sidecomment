@@ -12,13 +12,13 @@ BEGIN
   IF (NEW.remote_addr != '127.0.0.1') THEN
     SELECT count(mailto)
     INTO per_minute
-    FROM notify_log
+    FROM public.notify_log
     WHERE remote_addr = NEW.remote_addr
     AND sent > now() - interval '1 minute';
 
     SELECT count(*)
     INTO per_hour
-    FROM notify_log
+    FROM public.notify_log
     WHERE remote_addr = NEW.remote_addr
     AND sent > now() - interval '1 hour';
 

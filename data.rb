@@ -258,7 +258,7 @@ def fetch_user_stats(email)
     SELECT name, count(name)
     FROM stats
     GROUP BY name
-    ORDER BY count DESC, name
+    ORDER BY name DESC
   }
   db.exec(sql, [email])
 end
