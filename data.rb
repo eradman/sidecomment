@@ -60,7 +60,7 @@ def update_site(sitecode_id, domains)
   )
   domains_array = PG::TextEncoder::Array.new.encode(domains)
   r = db.exec(sql, [sitecode_id, domains_array])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def generate_usercode(email, hostname)
@@ -109,7 +109,7 @@ def fetch_ticket(ticket_id)
     ORDER BY ticket.created;
   }
   r = db.exec(sql, [ticket_id])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def fetch_replies(ticket_id, limit = 99)
@@ -148,7 +148,7 @@ def fetch_sitecode(sitecode_id)
     WHERE sitecode_id=$1
   )
   r = db.exec(sql, [sitecode_id])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def fetch_account(key, relation)
@@ -183,7 +183,7 @@ def fetch_account(key, relation)
     raise 'Unknown relation', relation
   end
   r = db.exec(sql, [key])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def fetch_registration(sitecode_id)
@@ -193,7 +193,7 @@ def fetch_registration(sitecode_id)
     WHERE sitecode_id=$1
   )
   r = db.exec(sql, [sitecode_id])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def fetch_ticket_summary(sitecode_id)
@@ -286,7 +286,7 @@ def create_ticket(hostname, params)
                 params['comment_area'],
                 hostname
               ])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def create_reply(_hostname, email, params)
@@ -310,7 +310,7 @@ def reset_otp(email)
     RETURNING otp
   )
   r = db.exec(sql, [email])
-  r[0]['otp'] if r.count.positive?
+  r[0]['otp'] if r.any?
 end
 
 def email_for_otp(otp)
@@ -321,7 +321,7 @@ def email_for_otp(otp)
     RETURNING email
   }
   r = db.exec(sql, [otp])
-  r[0]['email'] if r.count.positive?
+  r[0]['email'] if r.any?
 end
 
 def update_account(email, params)
@@ -337,7 +337,7 @@ def update_account(email, params)
                 params['location'],
                 params['home_page']
               ])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def close_ticket(ticket_id)
@@ -349,7 +349,7 @@ def close_ticket(ticket_id)
   }
   r = db.exec(sql, [ticket_id])
 
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def create_issue(email, origin, params)
@@ -368,7 +368,7 @@ def create_issue(email, origin, params)
                     params['sitecode_id'],
                     params['topic'],
                     params['comment_area']])
-  r[0] if r.count.positive?
+  r[0] if r.any?
 end
 
 def record_notification(mailto, subject, remote_addr)

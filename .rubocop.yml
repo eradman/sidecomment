@@ -1,6 +1,7 @@
 AllCops:
   SuggestExtensions: false
   NewCops: enable
+  StringLiteralsFrozenByDefault: true
 
 Style/HashSyntax:
   EnforcedStyle: no_mixed_keys
@@ -14,6 +15,7 @@ Style/GlobalVars:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+  EnforcedStyle: never
 
 Metrics/AbcSize:
   Exclude:
