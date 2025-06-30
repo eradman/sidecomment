@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-require 'minitest/utils'
 require 'rack/test'
 
 require_relative '../data'

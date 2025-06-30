@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-
 require_relative 'chromium'
 
 # Run actions in a real browser instance

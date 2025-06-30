@@ -26,10 +26,4 @@ $psql -f data.sql
 $psql -f mocks.sql
 $psql -c 'CREATE DATABASE test_0 TEMPLATE test'
 
-
-ruby=${RUBY:-ruby}
-$ruby verify.rb
-DATABASE_URL=${url} $ruby data.rb
-DATABASE_URL=${url} $ruby main.rb
-DATABASE_URL=${url} $ruby notify.rb
-DATABASE_URL=${url} $ruby authorized.rb
+DATABASE_URL=${url} minitest '*.rb'

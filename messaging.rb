@@ -81,7 +81,7 @@ def send_one_time_login(email, otp)
 end
 
 def send_open_summary(sitecode_email, sitecode_id, hostname, usercodes, count)
-  ticket_summary = ''
+  ticket_summary = String.new
   usercodes.each do |usercode_id|
     account = fetch_account(usercode_id, :usercode)
     ticket_summary << "Author: #{account['username']}\n"
@@ -108,7 +108,7 @@ end
 def reply_summary(ticket_id, limit = 99)
   replies = fetch_replies(ticket_id, limit)
 
-  reply_text = ''
+  reply_text = String.new
   replies.reverse_each do |row|
     reply_text << "\n #{row['username']}  #{row['created']}\n"
     reply_text << "\n  #{row['comment_area']}\n"

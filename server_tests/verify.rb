@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-
 require_relative '../main'
 require_relative '../verify'
 

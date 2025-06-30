@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-
 require_relative '../notify'
 
 # Tests actions that are initiated by a background schedule
